@@ -340,14 +340,7 @@ Contributions welcome! Please follow:
 
 This project is licensed under the MIT License - see [LICENSE](LICENSE) file.
 
----
 
-## 👨‍💻 **Author**
-
-**Your Name**  
-[GitHub](https://github.com/yourusername) • [LinkedIn](https://linkedin.com/in/yourprofile) • [Portfolio](https://yourportfolio.com)
-
----
 
 ## 🙏 **Acknowledgments**
 
@@ -358,13 +351,7 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) file.
 
 ---
 
-## 📞 **Support**
 
-- 📧 Email: your.email@example.com
-- 💬 Discord: [Join Server](https://discord.gg/yourserver)
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/VeriFace-Anonymous-Chat/issues)
-
----
 
 <div align="center">
 
