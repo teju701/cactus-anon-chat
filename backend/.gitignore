@@ -1,0 +1,19 @@
+# Environment Variables (CRITICAL!)
+.env
+.env.local
+.env.production
+*.env
+!.env.example
+# Python
+__pycache__/
+*.py[cod]
+venv/
+env/
+*.so
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
