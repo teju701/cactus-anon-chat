@@ -4,7 +4,7 @@
 
 A production-grade anonymous chat platform featuring AI-powered identity verification, intelligent matching algorithms, and real-time WebSocket communication. Built for privacy-first interactions with robust abuse prevention mechanisms.
 
-[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://cactus-chat.vercel.app)
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://cactus-anon-chat.vercel.app)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ---
@@ -128,8 +128,8 @@ npm or yarn
 
 ### **1. Clone Repository**
 ```bash
-git clone https://github.com/yourusername/VeriFace-Anonymous-Chat.git
-cd VeriFace-Anonymous-Chat
+git clone https://github.com/teju701/cactus-anon-chat.git
+cd cactus-anon-chat
 ```
 
 ### **2. Backend Setup**
@@ -250,12 +250,40 @@ Users → Vercel CDN → Render Backend → Redis Cloud
 **Backend (`backend/.env`):**
 ```env
 REDIS_URL=redis://localhost:6379
-CORS_ORIGINS=https://your-app.vercel.app
+CORS_ORIGINS=https://cactus-anon-chat.vercel.app
 ```
 
 **Frontend (`frontend/.env.production`):**
 ```env
-VITE_API_URL=https://your-backend.onrender.com
+VITE_API_URL=https://cactus-anon-chat-api.onrender.com
+```
+
+### **Advanced backend environment variables**
+These are configurable in Render (or in `backend/.env`) and have sensible defaults. Adjust them for your deployment needs.
+
+```env
+# Redis connection (set by Render blueprint when using the KeyValue service)
+REDIS_URL=redis://localhost:6379
+
+# Cross-origin allowed origins (comma-separated)
+# Example: CORS_ORIGINS=https://cactus-anon-chat.vercel.app,https://preview-...vercel.app
+CORS_ORIGINS=https://cactus-anon-chat.vercel.app
+
+# Verification image age (milliseconds). Images older than this are rejected.
+IMAGE_MAX_AGE_MS=10000
+
+# Queue / rate limiting
+QUEUE_COOLDOWN_SECONDS=3
+DAILY_FILTER_LIMIT=50
+SPAM_THRESHOLD=100
+MAX_REPORTS_BEFORE_FLAG=3
+
+# Room / queue expiry (seconds)
+ROOM_EXPIRY_SECONDS=3600
+QUEUE_EXPIRY_SECONDS=300
+
+# Debug (set to false in production)
+DEBUG=false
 ```
 
 ### **Deployment Steps**
@@ -283,12 +311,12 @@ The Blueprint creates:
 
 After deployment, copy your backend URL:
 ```text
-https://your-backend.onrender.com
+https://cactus-anon-chat-api.onrender.com
 ```
 
 Test the backend:
 ```text
-https://your-backend.onrender.com/
+https://cactus-anon-chat-api.onrender.com/
 ```
 
 Expected response:
@@ -317,7 +345,7 @@ Output Directory: dist
 ```
 6. Add this environment variable:
 ```env
-VITE_API_URL=https://your-backend.onrender.com
+VITE_API_URL=https://cactus-anon-chat-api.onrender.com
 ```
 7. Deploy
 
@@ -326,7 +354,7 @@ The `frontend/vercel.json` file is included so direct refreshes on routes like `
 #### **4. Final CORS Update**
 After Vercel gives you the frontend URL, go back to the Render backend service and update:
 ```env
-CORS_ORIGINS=https://your-vercel-app.vercel.app
+CORS_ORIGINS=https://cactus-anon-chat.vercel.app
 ```
 
 Then redeploy the Render backend.
