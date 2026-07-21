@@ -249,7 +249,7 @@ Users → Vercel CDN → Render Backend → Redis Cloud
 
 **Backend (`backend/.env`):**
 ```env
-REDIS_URL=redis://red-xxxxx.render.com:6379
+REDIS_URL=redis://localhost:6379
 CORS_ORIGINS=https://your-app.vercel.app
 ```
 
@@ -259,7 +259,85 @@ VITE_API_URL=https://your-backend.onrender.com
 ```
 
 ### **Deployment Steps**
-See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed instructions.
+
+#### **1. Push to GitHub**
+Make sure the project is committed and pushed to GitHub. Both Render and Vercel can deploy directly from the same repository.
+
+#### **2. Deploy Backend on Render**
+You can deploy the backend using the included `render.yaml` Blueprint.
+
+1. Go to the Render dashboard
+2. Select **New +** -> **Blueprint**
+3. Connect this GitHub repository
+4. Render will detect `render.yaml`
+5. During setup, set `CORS_ORIGINS` temporarily to:
+```env
+http://localhost:5173
+```
+6. Deploy the Blueprint
+
+The Blueprint creates:
+- FastAPI web service: `controlled-anon-chat-api`
+- Render Key Value store: `controlled-anon-chat-kv`
+- `REDIS_URL` automatically connected from the Key Value service
+
+After deployment, copy your backend URL:
+```text
+https://your-backend.onrender.com
+```
+
+Test the backend:
+```text
+https://your-backend.onrender.com/
+```
+
+Expected response:
+```json
+{
+  "status": "ok",
+  "redis": "connected"
+}
+```
+
+#### **3. Deploy Frontend on Vercel**
+
+1. Go to the Vercel dashboard
+2. Select **Add New** -> **Project**
+3. Import the same GitHub repository
+4. Set **Root Directory** to:
+```text
+frontend
+```
+5. Use these build settings:
+```text
+Framework Preset: Vite
+Install Command: npm install
+Build Command: npm run build
+Output Directory: dist
+```
+6. Add this environment variable:
+```env
+VITE_API_URL=https://your-backend.onrender.com
+```
+7. Deploy
+
+The `frontend/vercel.json` file is included so direct refreshes on routes like `/verify`, `/profile`, and `/chat` still load the React app instead of returning a 404.
+
+#### **4. Final CORS Update**
+After Vercel gives you the frontend URL, go back to the Render backend service and update:
+```env
+CORS_ORIGINS=https://your-vercel-app.vercel.app
+```
+
+Then redeploy the Render backend.
+
+#### **5. Production Test**
+Open your Vercel URL in two browser sessions, for example normal mode and incognito mode:
+
+1. Complete live verification in both sessions
+2. Create profiles
+3. Join the queue
+4. Confirm matching and WebSocket chat work
 
 ---
 

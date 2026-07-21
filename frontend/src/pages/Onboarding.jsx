@@ -1,6 +1,7 @@
-// frontend/src/pages/Onboarding.jsx
 import { useNavigate } from "react-router-dom";
+
 import { useDeviceId } from "../hooks/useDeviceId";
+
 
 export default function Onboarding() {
   const { deviceId, loading } = useDeviceId();
@@ -18,7 +19,7 @@ export default function Onboarding() {
     <div className="page-container">
       <div className="card">
         <div className="card-header">
-          <div className="icon-wrapper">
+          <div className="icon-wrapper" aria-hidden="true">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
@@ -30,15 +31,15 @@ export default function Onboarding() {
 
         <div className="features-grid">
           <div className="feature-box">
-            <div className="feature-emoji">🔒</div>
-            <div className="feature-label">100% Anonymous</div>
+            <div className="feature-emoji">Private</div>
+            <div className="feature-label">Anonymous</div>
           </div>
           <div className="feature-box">
-            <div className="feature-emoji">🛡️</div>
-            <div className="feature-label">AI Verified</div>
+            <div className="feature-emoji">Verified</div>
+            <div className="feature-label">Live Check</div>
           </div>
           <div className="feature-box">
-            <div className="feature-emoji">⚡</div>
+            <div className="feature-emoji">Fast</div>
             <div className="feature-label">Instant Match</div>
           </div>
         </div>
@@ -48,10 +49,10 @@ export default function Onboarding() {
           onClick={() => navigate("/verify")}
           disabled={!deviceId}
         >
-          Get Started →
+          Get Started
         </button>
 
-        <p className="text-tiny" style={{ textAlign: 'center', marginTop: '1rem' }}>
+        <p className="text-tiny" style={{ textAlign: "center", marginTop: "1rem" }}>
           Your privacy is protected. No data is stored permanently.
         </p>
       </div>

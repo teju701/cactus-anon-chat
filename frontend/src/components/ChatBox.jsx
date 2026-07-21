@@ -1,6 +1,7 @@
-// frontend/src/components/ChatBox.jsx
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import { getDeviceIdSync } from "../utils/device";
+
 
 export default function ChatBox({ socket, messages, onMessageSent }) {
   const [text, setText] = useState("");
@@ -16,15 +17,13 @@ export default function ChatBox({ socket, messages, onMessageSent }) {
 
     const messageText = text.trim();
 
-    // Send to server
     socket.send(
       JSON.stringify({
         type: "message",
         text: messageText,
-      })
+      }),
     );
 
-    // ✅ Add to local messages immediately (optimistic update)
     if (onMessageSent) {
       onMessageSent({
         type: "message",
@@ -36,7 +35,7 @@ export default function ChatBox({ socket, messages, onMessageSent }) {
     setText("");
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
@@ -47,7 +46,7 @@ export default function ChatBox({ socket, messages, onMessageSent }) {
     <div className="chat-container">
       <div className="chat-messages">
         {messages.length === 0 && (
-          <div style={{ textAlign: 'center', color: '#6b7280', marginTop: '5rem' }}>
+          <div style={{ textAlign: "center", color: "#6b7280", marginTop: "5rem" }}>
             <p className="text-small">Start a conversation...</p>
           </div>
         )}
@@ -78,15 +77,17 @@ export default function ChatBox({ socket, messages, onMessageSent }) {
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyDown}
           placeholder="Type a message..."
           className="chat-input"
           rows={1}
+          maxLength={1000}
         />
         <button
           onClick={sendMessage}
           disabled={!text.trim()}
           className="send-btn"
+          aria-label="Send message"
         >
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

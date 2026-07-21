@@ -150,7 +150,11 @@ body {
 }
 
 .feature-emoji {
-  font-size: 2rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  color: #c4b5fd;
+  min-height: 1rem;
   margin-bottom: 0.5rem;
 }
 
@@ -209,6 +213,26 @@ body {
 
 .btn-danger:hover {
   background: rgba(239, 68, 68, 0.3);
+}
+
+.compact-btn {
+  width: auto;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.btn-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.small-spinner {
+  width: 16px;
+  height: 16px;
+  border-width: 2px;
 }
 
 /* ====================================
@@ -275,7 +299,9 @@ textarea.input {
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
+  color: white;
   cursor: pointer;
+  font: inherit;
   transition: all 0.2s ease;
   text-align: center;
 }
@@ -291,7 +317,9 @@ textarea.input {
 }
 
 .filter-emoji {
-  font-size: 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #c4b5fd;
   margin-bottom: 0.25rem;
 }
 
@@ -714,5 +742,19 @@ textarea.input {
   
   .chat-container {
     height: 500px;
+  }
+
+  .chat-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .chat-actions {
+    width: 100%;
+  }
+
+  .chat-actions .compact-btn {
+    flex: 1;
   }
 }

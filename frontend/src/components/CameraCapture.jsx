@@ -1,5 +1,5 @@
-// frontend/src/components/CameraCapture.jsx
 import { useEffect, useRef, useState } from "react";
+
 
 export default function CameraCapture({ onCapture, isVerifying }) {
   const videoRef = useRef(null);
@@ -9,7 +9,6 @@ export default function CameraCapture({ onCapture, isVerifying }) {
   const [cameraReady, setCameraReady] = useState(false);
   const [error, setError] = useState("");
 
-  // ✅ START CAMERA
   useEffect(() => {
     navigator.mediaDevices
       .getUserMedia({ video: { facingMode: "user" } })
@@ -24,13 +23,11 @@ export default function CameraCapture({ onCapture, isVerifying }) {
         setError("Camera access denied. Please enable camera permissions.");
       });
 
-    // ✅ CLEANUP ON UNMOUNT
     return () => {
       stopCamera();
     };
   }, []);
 
-  // ✅ CENTRALIZED CAMERA STOP
   const stopCamera = () => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
@@ -38,7 +35,6 @@ export default function CameraCapture({ onCapture, isVerifying }) {
     }
   };
 
-  // ✅ CAPTURE + STOP CAMERA
   const capture = () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -57,9 +53,7 @@ export default function CameraCapture({ onCapture, isVerifying }) {
     const imageBase64 = canvas.toDataURL("image/jpeg");
     const timestamp = Date.now();
 
-    // 🔴 CRITICAL FIX: STOP CAMERA IMMEDIATELY
     stopCamera();
-
     onCapture({ image: imageBase64, timestamp });
   };
 
@@ -103,22 +97,12 @@ export default function CameraCapture({ onCapture, isVerifying }) {
         className="btn btn-primary"
       >
         {isVerifying ? (
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "0.5rem",
-            }}
-          >
-            <div
-              className="spinner"
-              style={{ width: "16px", height: "16px", borderWidth: "2px" }}
-            ></div>
+          <span className="btn-content">
+            <span className="spinner small-spinner"></span>
             Verifying...
           </span>
         ) : (
-          "📸 Capture Photo"
+          "Capture Photo"
         )}
       </button>
     </div>

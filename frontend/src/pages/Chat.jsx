@@ -1,11 +1,12 @@
-// frontend/src/pages/Chat.jsx
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQueue } from "../hooks/useQueue";
-import { createChatSocket, closeSocket } from "../utils/websocket";
+
 import ChatBox from "../components/ChatBox";
 import QueueStatus from "../components/QueueStatus";
 import ReportModal from "../components/ReportModal";
+import { useQueue } from "../hooks/useQueue";
+import { closeSocket, createChatSocket } from "../utils/websocket";
+
 
 export default function Chat() {
   const { status, roomId, partner, error } = useQueue();
@@ -14,37 +15,39 @@ export default function Chat() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (status === "matched" && roomId && partner) {
-      const ws = createChatSocket(
-        roomId,
-        (msg) => {
-          setMessages((prev) => [...prev, msg]);
-
-          if (msg.type === "system") {
-            if (msg.message.includes("reported")) {
-              setTimeout(() => {
-                closeSocket(ws);
-                navigate("/profile");
-              }, 3000);
-            } else if (msg.message.includes("left") || msg.message.includes("disconnected")) {
-              setTimeout(() => {
-                closeSocket(ws);
-                navigate("/profile");
-              }, 2000);
-            }
-          }
-        },
-        (error) => {
-          console.error("Chat error:", error);
-        }
-      );
-
-      setSocket(ws);
-
-      return () => {
-        closeSocket(ws);
-      };
+    if (status !== "matched" || !roomId || !partner) {
+      return undefined;
     }
+
+    const ws = createChatSocket(
+      roomId,
+      (msg) => {
+        setMessages((prev) => [...prev, msg]);
+
+        if (msg.type === "system") {
+          if (msg.message.includes("reported")) {
+            setTimeout(() => {
+              closeSocket(ws);
+              navigate("/profile");
+            }, 3000);
+          } else if (msg.message.includes("left") || msg.message.includes("disconnected")) {
+            setTimeout(() => {
+              closeSocket(ws);
+              navigate("/profile");
+            }, 2000);
+          }
+        }
+      },
+      (socketError) => {
+        console.error("Chat error:", socketError);
+      },
+    );
+
+    setSocket(ws);
+
+    return () => {
+      closeSocket(ws);
+    };
   }, [status, roomId, partner, navigate]);
 
   const handleMessageSent = (message) => {
@@ -68,11 +71,7 @@ export default function Chat() {
       }
       closeSocket(socket);
     }
-    
-    // ✅ FIX: Only clear filter, keep profile
-    sessionStorage.removeItem("filter");
-    
-    // Reload page to trigger new queue
+
     window.location.href = "/chat";
   };
 
@@ -83,11 +82,11 @@ export default function Chat() {
   const partnerDeviceId = partner?.device_id || null;
 
   return (
-    <div style={{ minHeight: '100vh', padding: '1rem' }}>
-      <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+    <div style={{ minHeight: "100vh", padding: "1rem" }}>
+      <div style={{ maxWidth: "900px", margin: "0 auto" }}>
         <div className="chat-header">
           <div className="chat-user-info">
-            <div className="chat-avatar">👤</div>
+            <div className="chat-avatar" aria-hidden="true">A</div>
             <div className="chat-details">
               <h3>{partner?.nickname || "Anonymous"}</h3>
               {partner?.bio && <p>{partner.bio}</p>}
@@ -95,19 +94,19 @@ export default function Chat() {
           </div>
 
           <div className="chat-actions">
-            <button onClick={nextMatch} className="btn btn-secondary" style={{ width: 'auto', padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
+            <button onClick={nextMatch} className="btn btn-secondary compact-btn">
               Next Match
             </button>
-            <button onClick={leaveChat} className="btn btn-danger" style={{ width: 'auto', padding: '0.5rem 1rem', fontSize: '0.875rem' }}>
+            <button onClick={leaveChat} className="btn btn-danger compact-btn">
               Leave
             </button>
           </div>
         </div>
 
         {socket && (
-          <ChatBox 
-            socket={socket} 
-            messages={messages} 
+          <ChatBox
+            socket={socket}
+            messages={messages}
             onMessageSent={handleMessageSent}
           />
         )}

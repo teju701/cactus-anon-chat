@@ -1,13 +1,13 @@
-// frontend/src/pages/Profile.jsx
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { useDeviceId } from "../hooks/useDeviceId";
 
+
 export default function Profile() {
-  const { deviceId } = useDeviceId();
+  useDeviceId();
   const navigate = useNavigate();
-  
-  // ✅ FIX: Load existing values or defaults
+
   const [nickname, setNickname] = useState(sessionStorage.getItem("nickname") || "");
   const [bio, setBio] = useState(sessionStorage.getItem("bio") || "");
   const [filter, setFilter] = useState(sessionStorage.getItem("filter") || "any");
@@ -21,26 +21,29 @@ export default function Profile() {
   }, [navigate]);
 
   const submitProfile = () => {
-    if (!nickname.trim()) {
+    const trimmedNickname = nickname.trim();
+    const trimmedBio = bio.trim();
+
+    if (!trimmedNickname) {
       setError("Nickname is required");
       return;
     }
-    if (nickname.length < 2) {
+    if (trimmedNickname.length < 2) {
       setError("Nickname must be at least 2 characters");
       return;
     }
-    if (bio.length > 120) {
-      setError("Bio too long (max 120 characters)");
+    if (trimmedBio.length > 120) {
+      setError("Bio too long. Max 120 characters.");
       return;
     }
 
-    sessionStorage.setItem("nickname", nickname.trim());
-    sessionStorage.setItem("bio", bio.trim());
+    sessionStorage.setItem("nickname", trimmedNickname);
+    sessionStorage.setItem("bio", trimmedBio);
     sessionStorage.setItem("filter", filter);
     navigate("/chat");
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       submitProfile();
@@ -51,7 +54,7 @@ export default function Profile() {
     <div className="page-container">
       <div className="card">
         <div className="card-header">
-          <div className="icon-wrapper">
+          <div className="icon-wrapper" aria-hidden="true">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
@@ -62,7 +65,7 @@ export default function Profile() {
 
         <div className="input-group">
           <label className="input-label">
-            Nickname <span style={{ color: '#f87171' }}>*</span>
+            Nickname <span style={{ color: "#f87171" }}>*</span>
           </label>
           <input
             type="text"
@@ -70,7 +73,7 @@ export default function Profile() {
             placeholder="e.g., MidnightTalker"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyDown}
             maxLength={50}
           />
           <p className="char-count">{nickname.length}/50 characters</p>
@@ -92,31 +95,34 @@ export default function Profile() {
         <div className="input-group">
           <label className="input-label">Who would you like to chat with?</label>
           <div className="filter-grid">
-            <div
+            <button
+              type="button"
               className={`filter-btn ${filter === "any" ? "active" : ""}`}
               onClick={() => setFilter("any")}
             >
-              <div className="filter-emoji">🌐</div>
+              <div className="filter-emoji">All</div>
               <div className="filter-label">Anyone</div>
-            </div>
-            <div
+            </button>
+            <button
+              type="button"
               className={`filter-btn ${filter === "male" ? "active" : ""}`}
               onClick={() => setFilter("male")}
             >
-              <div className="filter-emoji">👨</div>
+              <div className="filter-emoji">M</div>
               <div className="filter-label">Male</div>
-            </div>
-            <div
+            </button>
+            <button
+              type="button"
               className={`filter-btn ${filter === "female" ? "active" : ""}`}
               onClick={() => setFilter("female")}
             >
-              <div className="filter-emoji">👩</div>
+              <div className="filter-emoji">F</div>
               <div className="filter-label">Female</div>
-            </div>
+            </button>
           </div>
           {filter !== "any" && (
-            <p className="text-small" style={{ color: '#fde047', marginTop: '0.5rem' }}>
-              ⚡ Limited to 50 specific matches per day
+            <p className="text-small" style={{ color: "#fde047", marginTop: "0.5rem" }}>
+              Limited to 50 specific matches per day.
             </p>
           )}
         </div>
@@ -128,12 +134,12 @@ export default function Profile() {
         )}
 
         <button onClick={submitProfile} className="btn btn-primary">
-          Enter Chat Room →
+          Enter Chat Room
         </button>
 
-        <div className="alert alert-info" style={{ marginTop: '1rem' }}>
+        <div className="alert alert-info" style={{ marginTop: "1rem" }}>
           <p className="text-tiny">
-            💡 Your profile is temporary and will be deleted after your session ends.
+            Your profile is temporary and stays only in this browser session.
           </p>
         </div>
       </div>
